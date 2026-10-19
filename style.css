@@ -452,9 +452,36 @@ body {
   object-fit: cover;
   border-radius: 12px;
   filter: brightness(0.95);
-  position: relative;
+  position: absolute;
+  top: 0; left: 0;
+  z-index: 1;
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+/* Bó hoa: ẩn ban đầu, hiện khi reveal */
+#bouquet-img {
+  opacity: 0;
+  transform: scale(0.88);
   z-index: 1;
 }
+#bouquet-img.revealed {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Ảnh người gửi: hiện ban đầu, ẩn khi reveal */
+#sender-img {
+  opacity: 1;
+  transform: scale(1);
+  z-index: 2;
+  object-position: top center;
+}
+#sender-img.hidden {
+  opacity: 0;
+  transform: scale(1.06);
+  pointer-events: none;
+}
+
 .bouquet-glow {
   position: absolute;
   top: 50%;

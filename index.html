@@ -77,14 +77,24 @@
   <section id="screen-bouquet" class="screen" aria-label="Bó hoa tình yêu">
     <div class="bouquet-inner">
 
-      <!-- Bouquet image -->
+      <!-- Image reveal: sender photo → bouquet -->
       <div class="bouquet-image-wrap">
         <div class="bouquet-glow" aria-hidden="true"></div>
+
+        <!-- Ảnh bó hoa (ẩn ban đầu) -->
         <img
           src="assets/images/bouquet.jpg"
           alt="Bó hoa hồng tặng em"
           id="bouquet-img"
           loading="lazy"
+        />
+
+        <!-- Ảnh người gửi (hiện ban đầu, sẽ fade out khi nhấn nút) -->
+        <img
+          src="assets/images/sender.jpg"
+          alt="Từ anh gửi em ♡"
+          id="sender-img"
+          loading="eager"
         />
       </div>
 
@@ -191,7 +201,13 @@
     </div>
   </section>
 
+  <!-- ========== YOUTUBE PLAYER (HIDDEN) ========== -->
+  <div id="yt-player-wrap" aria-hidden="true" style="position:fixed;width:1px;height:1px;opacity:0;pointer-events:none;z-index:-1;overflow:hidden;">
+    <div id="yt-player"></div>
+  </div>
+
   <!-- ========== SCRIPTS ========== -->
+  <script src="https://www.youtube.com/iframe_api"></script>
   <script src="data.js"></script>
   <script src="main.js"></script>
 

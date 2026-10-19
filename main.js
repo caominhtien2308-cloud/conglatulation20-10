@@ -22,68 +22,58 @@ const State = {
   photos: [],       // merged placeholder + real photos
 };
 
-// ——— AUDIO (Web Audio API tone generator) ———
-function initAudio() {
-  if (State.audioCtx) return;
-  try {
-    State.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    createAmbientMusic();
-  } catch(e) { console.warn('Audio not available', e); }
-}
+// ——— YOUTUBE MUSIC PLAYER ———
+const YT_VIDEO_ID = 'pcWczkY4Ii8'; // ID bài hát từ YouTube
+let ytPlayer = null;
+let ytReady  = false;
 
-function createAmbientMusic() {
-  if (!State.audioCtx) return;
-  const ctx = State.audioCtx;
-  // Soft ambient drone using oscillators
-  const notes = [261.63, 329.63, 392, 440, 523.25]; // C, E, G, A, C5
-  const gainNode = ctx.createGain();
-  gainNode.gain.setValueAtTime(0, ctx.currentTime);
-  gainNode.connect(ctx.destination);
-  State.masterGain = gainNode;
-
-  const reverb = ctx.createConvolver();
-  // Simple reverb impulse
-  const len = ctx.sampleRate * 3;
-  const buf = ctx.createBuffer(2, len, ctx.sampleRate);
-  for (let ch = 0; ch < 2; ch++) {
-    const arr = buf.getChannelData(ch);
-    for (let i = 0; i < len; i++) arr[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 2);
-  }
-  reverb.buffer = buf;
-  reverb.connect(gainNode);
-
-  notes.forEach((freq, i) => {
-    const osc = ctx.createOscillator();
-    const g = ctx.createGain();
-    osc.frequency.value = freq;
-    osc.type = 'sine';
-    g.gain.value = 0.03;
-    osc.connect(g);
-    g.connect(reverb);
-    osc.start();
-    // LFO for tremolo
-    const lfo = ctx.createOscillator();
-    const lfoGain = ctx.createGain();
-    lfo.frequency.value = 0.1 + i * 0.05;
-    lfoGain.gain.value = 0.015;
-    lfo.connect(lfoGain);
-    lfoGain.connect(g.gain);
-    lfo.start();
+// Called automatically by YouTube IFrame API when API loaded
+window.onYouTubeIframeAPIReady = function () {
+  ytPlayer = new YT.Player('yt-player', {
+    height: '1',
+    width:  '1',
+    videoId: YT_VIDEO_ID,
+    playerVars: {
+      autoplay:       0,
+      controls:       0,
+      loop:           1,
+      playlist:       YT_VIDEO_ID, // required for loop
+      playsinline:    1,           // iOS: play inline not fullscreen
+      rel:            0,
+      modestbranding: 1,
+      iv_load_policy: 3,
+    },
+    events: {
+      onReady: function (e) {
+        ytReady = true;
+        e.target.setVolume(70);
+      },
+      onError: function (e) {
+        console.warn('YouTube player error:', e.data);
+      }
+    }
   });
-}
+};
 
 function toggleMusic() {
-  initAudio();
-  if (!State.masterGain) return;
   const btn = document.getElementById('music-toggle');
+
+  if (!ytReady) {
+    // API chưa load xong — thông báo nhẹ
+    btn.textContent = '...';
+    setTimeout(() => {
+      btn.textContent = State.musicPlaying ? '♫' : '♪';
+    }, 1500);
+    return;
+  }
+
   if (State.musicPlaying) {
-    State.masterGain.gain.linearRampToValueAtTime(0, State.audioCtx.currentTime + 1);
+    ytPlayer.pauseVideo();
     State.musicPlaying = false;
     btn.textContent = '♪';
     btn.classList.remove('playing');
   } else {
-    if (State.audioCtx.state === 'suspended') State.audioCtx.resume();
-    State.masterGain.gain.linearRampToValueAtTime(1, State.audioCtx.currentTime + 1.5);
+    ytPlayer.playVideo();
     State.musicPlaying = true;
     btn.textContent = '♫';
     btn.classList.add('playing');
@@ -498,15 +488,41 @@ const BouquetScene = (() => {
     document.getElementById('btn-receive-flower').textContent = LOVE_DATA.bouquet.buttonText;
     document.getElementById('bouquet-gift-msg').textContent = LOVE_DATA.bouquet.giftMessage;
     document.getElementById('bouquet-gift-msg').classList.remove('show');
+
+    // Reset reveal state
+    petalsActive = false;
+    const senderImg  = document.getElementById('sender-img');
+    const bouquetImg = document.getElementById('bouquet-img');
+    const btn        = document.getElementById('btn-receive-flower');
+    senderImg.classList.remove('hidden');
+    bouquetImg.classList.remove('revealed');
+    btn.style.opacity = '';
+    btn.style.pointerEvents = '';
   }
 
   function receiveFlower() {
     if (petalsActive) return;
     petalsActive = true;
-    spawnPetals(30);
-    const gifMsg = document.getElementById('bouquet-gift-msg');
-    gifMsg.classList.add('show');
-    const btn = document.getElementById('btn-receive-flower');
+
+    const senderImg  = document.getElementById('sender-img');
+    const bouquetImg = document.getElementById('bouquet-img');
+    const btn        = document.getElementById('btn-receive-flower');
+    const gifMsg     = document.getElementById('bouquet-gift-msg');
+
+    // Bước 1: fade out ảnh người gửi
+    senderImg.classList.add('hidden');
+
+    // Bước 2: sau 400ms, fade in bó hoa + spawn cánh hoa
+    setTimeout(() => {
+      bouquetImg.classList.add('revealed');
+      spawnPetals(30);
+    }, 450);
+
+    // Bước 3: hiện lời chúc
+    setTimeout(() => {
+      gifMsg.classList.add('show');
+    }, 900);
+
     btn.style.opacity = '0.4';
     btn.style.pointerEvents = 'none';
   }
