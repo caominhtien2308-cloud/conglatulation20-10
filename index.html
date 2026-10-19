@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#050308" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="description" content="A romantic gift made with love — Happy Vietnamese Women's Day 20/10 ♡" />
+
+  <title>A Gift Just For You — 20/10 ♡</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ========== CANVAS PARTICLES ========== -->
+  <canvas id="particle-canvas" aria-hidden="true"></canvas>
+
+  <!-- ========== TRANSITION OVERLAY ========== -->
+  <div id="transition-overlay" class="transition-overlay" aria-hidden="true"></div>
+
+  <!-- ========== MUSIC TOGGLE ========== -->
+  <button id="music-toggle" aria-label="Bật/tắt nhạc nền" title="Nhạc nền">♪</button>
+
+  <!-- ========== NAV DOTS ========== -->
+  <nav id="nav-dots" aria-label="Điều hướng chương"></nav>
+
+  <!-- ========== PHOTO OVERLAY ========== -->
+  <div id="photo-overlay" role="dialog" aria-modal="true" aria-label="Xem ảnh">
+    <button id="photo-overlay-close" aria-label="Đóng">✕</button>
+    <img id="photo-overlay-img" alt="Ảnh kỷ niệm" />
+    <p id="photo-overlay-caption"></p>
+    <p id="photo-overlay-date"></p>
+  </div>
+
+  <!-- ============================================================
+       SCREEN 0 — INTRO
+       ============================================================ -->
+  <section id="screen-intro" class="screen active" aria-label="Màn hình mở đầu">
+    <div class="intro-content">
+      <div class="intro-main-text">
+        <span id="intro-main-text"></span><span class="cursor-blink" id="typing-cursor">|</span>
+      </div>
+      <p class="intro-sub-text" id="intro-sub-text"></p>
+      <button class="btn-open-gift" id="btn-open-gift" aria-label="Mở món quà"></button>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SCREEN 1 — FLOATING PHOTO UNIVERSE
+       ============================================================ -->
+  <section id="screen-universe" class="screen" aria-label="Vũ trụ ảnh kỷ niệm">
+
+    <!-- Floating photos container -->
+    <div id="universe-container" aria-label="Không gian ảnh kỷ niệm"></div>
+
+    <!-- Love quote display -->
+    <div id="love-quote-display" aria-live="polite">
+      <p class="love-quote-text" id="love-quote-text"></p>
+    </div>
+
+    <!-- Navigation button -->
+    <button class="nav-btn" data-nav="2" aria-label="Đến phần bó hoa">
+      Tiếp theo &rarr;
+    </button>
+  </section>
+
+  <!-- ============================================================
+       SCREEN 2 — BOUQUET
+       ============================================================ -->
+  <section id="screen-bouquet" class="screen" aria-label="Bó hoa tình yêu">
+    <div class="bouquet-inner">
+
+      <!-- Bouquet image -->
+      <div class="bouquet-image-wrap">
+        <div class="bouquet-glow" aria-hidden="true"></div>
+        <img
+          src="assets/images/bouquet.jpg"
+          alt="Bó hoa hồng tặng em"
+          id="bouquet-img"
+          loading="lazy"
+        />
+      </div>
+
+      <p class="bouquet-title" id="bouquet-title"></p>
+      <p class="bouquet-subtitle" id="bouquet-subtitle"></p>
+
+      <button class="btn-receive-flower" id="btn-receive-flower" aria-label="Nhận hoa">
+      </button>
+
+      <p class="bouquet-gift-msg" id="bouquet-gift-msg"></p>
+
+      <button class="nav-btn" data-nav="3" aria-label="Đến quả cầu kỷ niệm" style="position:relative;bottom:auto;right:auto;margin-top:8px">
+        Khám phá thêm &rarr;
+      </button>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SCREEN 3 — MEMORY SPHERE
+       ============================================================ -->
+  <section id="screen-sphere" class="screen" aria-label="Quả cầu kỷ niệm">
+
+    <div style="text-align:center; margin-bottom: 16px; z-index:2; position:relative;">
+      <h2 style="font-family:'Great Vibes',cursive; font-size: clamp(1.8rem,6vw,2.4rem); color: var(--pink-neon); text-shadow: 0 0 20px rgba(255,79,163,0.6);">
+        Những kỷ niệm của chúng ta
+      </h2>
+      <p style="font-family:'Cormorant Garamond',serif; font-size:0.9rem; color: rgba(255,182,217,0.5); margin-top:6px;">
+        Kéo để xoay • Nhấn để xem
+      </p>
+    </div>
+
+    <div id="sphere-container" role="img" aria-label="Quả cầu ảnh xoay">
+      <div class="sphere-glow" aria-hidden="true"></div>
+      <div id="sphere-inner" style="transform-style:preserve-3d; width:100%; height:100%; position:absolute;"></div>
+      <p class="sphere-hint">← Vuốt để xoay →</p>
+    </div>
+
+    <div style="display:flex; gap:12px; margin-top:24px; position:relative; z-index:2;">
+      <button class="nav-btn" data-nav="4" style="position:relative;bottom:auto;right:auto;">
+        Thư viện ảnh →
+      </button>
+      <button class="nav-btn" data-nav="5" style="position:relative;bottom:auto;right:auto;">
+        Đọc thư tình →
+      </button>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SCREEN 4 — PHOTO GALLERY
+       ============================================================ -->
+  <section id="screen-gallery" class="screen" aria-label="Thư viện ảnh kỷ niệm">
+    <div class="gallery-header">
+      <h2>Kỷ niệm của chúng ta ♡</h2>
+      <p>Những khoảnh khắc đáng nhớ nhất</p>
+    </div>
+    <div class="gallery-grid" id="gallery-grid" role="list"></div>
+    <div style="width:100%; max-width:480px; margin:20px auto 0; text-align:center;">
+      <button class="nav-btn" data-nav="5" style="position:relative;bottom:auto;right:auto;margin:0 auto;">
+        Đọc bức thư tình →
+      </button>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SCREEN 5 — LOVE LETTER
+       ============================================================ -->
+  <section id="screen-letter" class="screen" aria-label="Bức thư tình 20/10">
+    <div class="letter-wrap">
+
+      <!-- Back button -->
+      <div style="margin-bottom:16px;">
+        <button class="nav-btn" data-nav="1" style="position:relative;bottom:auto;right:auto;">
+          ← Quay lại
+        </button>
+      </div>
+
+      <div class="letter-card" role="article">
+
+        <!-- Decorative hearts -->
+        <div class="letter-hearts" aria-hidden="true">
+          <span class="letter-heart-deco" style="top:10px;right:20px;">♡</span>
+          <span class="letter-heart-deco" style="bottom:30px;left:15px;">♡</span>
+          <span class="letter-heart-deco" style="top:50%;left:50%;font-size:120px;transform:translate(-50%,-50%);">♡</span>
+        </div>
+
+        <p class="letter-to" id="letter-to"></p>
+        <h1 class="letter-title" id="letter-title"></h1>
+        <div class="letter-divider" aria-hidden="true"></div>
+
+        <div class="letter-body" id="letter-body">
+          <!-- Paragraphs injected by JS -->
+        </div>
+
+        <div class="letter-footer">
+          <p class="letter-from" id="letter-from"></p>
+          <p class="letter-date-sig" id="letter-date-sig"></p>
+        </div>
+      </div>
+
+      <!-- Floating petals decoration -->
+      <div style="text-align:center; margin-top:24px; color:rgba(255,182,217,0.3); font-size:1.5rem;" aria-hidden="true">
+        ♡ &nbsp; ♡ &nbsp; ♡
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== SCRIPTS ========== -->
+  <script src="data.js"></script>
+  <script src="main.js"></script>
+
+</body>
+</html>
