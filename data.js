@@ -42,7 +42,7 @@ const LOVE_DATA = {
     title: "20/10 này, anh muốn dành cho em một điều thật đặc biệt.",
     subtitle: "Em xứng đáng với tất cả những điều dịu dàng nhất. ♡",
     buttonText: "Nhận hoa từ anh",
-    giftMessage: "Bó hoa này là tất cả tình yêu của anh gửi đến em. Chúc em ngày 20/10 thật hạnh phúc! ♡",
+    giftMessage: "Bó hoa này là tất cả niềm yêu thương của anh gửi đến em. Chúc em ngày 20/10 thật hạnh phúc! ♡",
   },
 
   // ——— THƯ VIỆN ẢNH KỶ NIỆM ———
